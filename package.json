@@ -1,0 +1,9 @@
+{
+  "name": "winston-scalajs",
+  "version": "2.3.1",
+  "private": true,
+  "dependencies": {
+    "source-map": "^0.5.6",
+    "winston": "^2.3.1"
+  }
+}
