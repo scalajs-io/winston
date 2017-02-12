@@ -83,8 +83,8 @@ import scalajs.js
 
 val logger = new winston.Logger(new ConfigurationOptions(
     transports = js.Array(
-      new Console(),
-      new File(new FileTransportOptions(filename = "somefile.log"))
+      new winston.transports.Console(),
+      new winston.transports.File(new FileTransportOptions(filename = "somefile.log"))
 )))
 ```
 
@@ -163,7 +163,7 @@ import scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
 
 val logger = new winston.Logger(new ConfigurationOptions(
-  transports = js.Array(new Console())
+  transports = js.Array(new winston.transports.Console())
 ))
 
 logger.log("info", "test message %s", "my string")
@@ -196,6 +196,167 @@ logger.log("info", "test message", "first", "second", new MetaData(number = 123)
 
 @ScalaJSDefined
 class MetaData(val number: Integer = null) extends js.Object
+```
+
+##### Querying Logs
+
+Winston supports querying of logs with Loggly-like options. See [Loggly Search API](https://www.loggly.com/docs/api-retrieving-data/). 
+Specifically: File, Couchdb, Redis, Loggly, Nssocket, and Http.
+
+```scala
+import io.scalajs.nodejs.console
+import io.scalajs.npm.winston._
+import scalajs.js
+
+val options = new QueryOptions(
+    from = js.Date.now - 24 * 60 * 60 * 1000,
+    until = new js.Date,
+    limit = 10,
+    start = 0,
+    order = "desc",
+    fields = js.Array("message")
+)
+
+//
+// Find items logged between today and yesterday.
+//
+Winston.query(options, (err, results) => {
+    if (err != null) {
+      throw new IllegalStateException(err.code)
+    }
+    
+    console.log("query results:", results)
+})
+```
+
+##### Streaming Logs
+      
+Streaming allows you to stream your logs back from your chosen transport.
+
+```scala
+import io.scalajs.nodejs.console
+import io.scalajs.npm.winston._
+
+Winston.stream(new StreamingOptions(start = -1)).onLog { log => 
+    console.log("log:", log)
+}
+```
+
+##### To Exit or Not to Exit
+
+By default, winston will exit after logging an uncaughtException. 
+if this is not the behavior you want, set exitOnError = false
+
+```scala
+import io.scalajs.npm.winston
+import io.scalajs.npm.winston._
+
+val logger = new winston.Logger(new ConfigurationOptions(exitOnError = false))
+ 
+// 
+// or, like this: 
+// 
+logger.exitOnError = false
+```
+
+##### Using Logging Levels
+
+Setting the level for your logging message can be accomplished in one of two ways. 
+You can pass a string representing the logging level to the log() method or use the level specified methods 
+defined on every winston Logger.
+
+```scala
+import io.scalajs.npm.winston
+import io.scalajs.npm.winston._
+
+val logger = new winston.Logger(new ConfigurationOptions(exitOnError = false))
+
+// 
+// Any logger instance 
+// 
+logger.log("silly", "127.0.0.1 - there's no place like home")
+logger.log("debug", "127.0.0.1 - there's no place like home")
+logger.log("verbose", "127.0.0.1 - there's no place like home")
+logger.log("info", "127.0.0.1 - there's no place like home")
+logger.log("warn", "127.0.0.1 - there's no place like home")
+logger.log("error", "127.0.0.1 - there's no place like home")
+logger.info("127.0.0.1 - there's no place like home")
+logger.warn("127.0.0.1 - there's no place like home")
+logger.error("127.0.0.1 - there's no place like home")
+
+// 
+// Default logger 
+// 
+Winston.log("info", "127.0.0.1 - there's no place like home")
+Winston.info("127.0.0.1 - there's no place like home")
+```
+
+winston allows you to define a level property on each transport which specifies the maximum level of messages 
+that a transport should log. For example, using the npm levels you could log only error messages to the console 
+and everything info and below to a file (which includes error messages):
+
+```scala
+import io.scalajs.npm.winston
+import io.scalajs.npm.winston._
+import io.scalajs.npm.winston.transports._
+import scalajs.js
+
+val logger = new winston.Logger(new ConfigurationOptions(
+    transports = js.Array(
+        new winston.transports.Console(new ConsoleTransportOptions(level = "error")),
+        new winston.transports.File(new FileTransportOptions(
+            filename = "somefile.log",
+            level = "info"
+        ))
+    )
+))
+```
+
+You may also dynamically change the log level of a transport:
+
+```scala
+import io.scalajs.npm.winston
+import io.scalajs.npm.winston._
+import io.scalajs.npm.winston.transports._
+import scalajs.js
+
+val logger = new winston.Logger(new ConfigurationOptions(
+    transports = js.Array(
+        new winston.transports.Console(new ConsoleTransportOptions(level = "warn")),
+        new winston.transports.File(new FileTransportOptions(
+            filename = "somefile.log",
+            level = "info"
+        ))
+    )
+))
+  
+logger.debug("Will not be logged in either transport!")
+logger.transports.console.level = "debug"
+logger.transports.file.level = "verbose"
+logger.verbose("Will be logged in both transports!")
+```
+
+```scala
+import io.scalajs.nodejs.process
+import io.scalajs.npm.winston
+import io.scalajs.npm.winston._
+import io.scalajs.npm.winston.transports._
+import scalajs.js
+
+WinstonDailyRotateFile // let's ensure the daily rotate file package is loaded
+
+val transport = new winston.transports.DailyRotateFile(new DailyRotateFileOptions(
+    filename = "./src/test/resources/rotating.log",
+    datePattern = "yyyy-MM-dd.",
+    prepend = true,
+    level = if (process.env.get("ENV").contains("development")) "debug" else "info"
+))
+
+val logger = new winston.Logger(new ConfigurationOptions(
+    transports = js.Array(transport)
+))
+
+logger.info("Hello World!")
 ```
 
 #### Artifacts and Resolvers

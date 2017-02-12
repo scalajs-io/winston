@@ -1,31 +1,29 @@
 package io.scalajs.npm.winston
+package transports
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation.JSName
+import scala.scalajs.js.annotation.JSBracketAccess
 
 /**
-  * Winston Transport
+  * Winston Transports collection
   * @author lawrence.daniels@gmail.com
   */
 @js.native
-@JSName("winston.Transport")
-abstract class Transport extends js.Object {
+trait Transports extends js.Object {
 
   ///////////////////////////////////////////////////////////////////////////////////////////
   //        Properties
   ///////////////////////////////////////////////////////////////////////////////////////////
 
-  var name: String = js.native
+  def console: Transport = js.native
 
-  var level: String = js.native
+  def file: Transport = js.native
 
   ///////////////////////////////////////////////////////////////////////////////////////////
   //        Methods
   ///////////////////////////////////////////////////////////////////////////////////////////
 
-  def handleExceptions(): Unit = js.native
-
-  def log(level: String, message: String, meta: js.Any, callback: js.Function2[WinstonError, Boolean, Any]): Unit = js.native
+  @JSBracketAccess
+  def apply(index: Int): Transport = js.native
 
 }
-

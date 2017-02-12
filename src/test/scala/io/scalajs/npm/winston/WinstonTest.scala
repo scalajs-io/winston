@@ -1,11 +1,13 @@
 package io.scalajs.npm
 package winston
 
-import io.scalajs.nodejs.setTimeout
+import io.scalajs.nodejs.{console, process, setTimeout}
 import io.scalajs.npm.winston.WinstonTest.MetaData
-import io.scalajs.npm.winston.transports._
+import io.scalajs.npm.winston.transports.{ConsoleTransportOptions, DailyRotateFileOptions, FileTransportOptions}
 import org.scalatest.FunSpec
 
+import scala.concurrent.duration._
+import scala.language.existentials
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
 
@@ -26,8 +28,8 @@ class WinstonTest extends FunSpec {
     }
 
     it("supports adding/removing transports") {
-      Winston.add(File, new FileTransportOptions(filename = "somefile.log"))
-      Winston.remove(Console)
+      Winston.add(winston.transports.File, new FileTransportOptions(filename = "somefile.log"))
+      Winston.remove(winston.transports.Console)
     }
 
     it("can also configure transports via configure()") {
@@ -39,8 +41,8 @@ class WinstonTest extends FunSpec {
     it("supports instantiating logger instances") {
       val logger = new winston.Logger(new ConfigurationOptions(
         transports = js.Array(
-          new Console(),
-          new File(new FileTransportOptions(filename = "somefile.log"))
+          new winston.transports.Console(),
+          new winston.transports.File(new FileTransportOptions(filename = "somefile.log"))
         )))
     }
 
@@ -75,7 +77,7 @@ class WinstonTest extends FunSpec {
 
     it("supports string interpolation") {
       val logger = new winston.Logger(new ConfigurationOptions(
-        transports = js.Array(new Console())
+        transports = js.Array(new winston.transports.Console())
       ))
 
       logger.log("info", "test message %s", "my string")
@@ -105,6 +107,78 @@ class WinstonTest extends FunSpec {
       // info: test message first second
       // meta = {number: 123}
       // callback = function(){}
+    }
+
+    it("supports querying of logs with Loggly-like options") {
+      val options = new QueryOptions(
+        from = js.Date.now - 24.hours.toMillis,
+        until = new js.Date,
+        limit = 10,
+        start = 0,
+        order = "desc",
+        fields = js.Array("message")
+      )
+
+      //
+      // Find items logged between today and yesterday.
+      //
+      Winston.query(options, (err, results) => {
+        if (err != null) {
+          throw new IllegalStateException(err.code)
+        }
+
+        console.log("query results:", results)
+      })
+    }
+
+    it("supports streaming logs back from a chosen transport") {
+      // TODO Fix timeout issue
+      /*
+      Winston.stream(new StreamingOptions(start = -1)).onLog { log =>
+        console.log("log:", log)
+      }*/
+    }
+
+    it("supports exit-on-error") {
+      val logger = new winston.Logger(new ConfigurationOptions(exitOnError = false))
+
+      //
+      // or, like this:
+      //
+      logger.exitOnError = false
+    }
+
+    it("supports dynamically changing the log level of a transport") {
+      val logger = new winston.Logger(new ConfigurationOptions(
+        transports = js.Array(
+          new winston.transports.Console(new ConsoleTransportOptions(level = "warn")),
+          new winston.transports.File(new FileTransportOptions(
+            filename = "somefile.log",
+            level = "info"
+          ))
+        )
+      ))
+
+      logger.debug("Will not be logged in either transport!")
+      logger.transports.console.level = "debug"
+      logger.transports.file.level = "verbose"
+      logger.verbose("Will be logged in both transports!")
+    }
+
+    it("supports log rotation") {
+      WinstonDailyRotateFile
+      val transport = new winston.transports.DailyRotateFile(new DailyRotateFileOptions(
+        filename = "./src/test/resources/rotating.log",
+        datePattern = "yyyy-MM-dd.",
+        prepend = true,
+        level = if (process.env.get("ENV").contains("development")) "debug" else "info"
+      ))
+
+      val logger = new winston.Logger(new ConfigurationOptions(
+        transports = js.Array(transport)
+      ))
+
+      logger.info("Hello World!")
     }
 
   }

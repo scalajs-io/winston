@@ -1,9 +1,11 @@
-package io.scalajs.npm.winston.transports
+package io.scalajs.npm.winston
+package transports
 
-import io.scalajs.npm.winston.Transport
+import io.scalajs.RawOptions
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation.JSImport
+import scala.scalajs.js.annotation.{JSImport, ScalaJSDefined}
+import scala.scalajs.js.|
 
 /**
   * Console Transport
@@ -11,8 +13,22 @@ import scala.scalajs.js.annotation.JSImport
   */
 @js.native
 @JSImport("winston", "transports.Console")
-class Console() extends Transport
+class Console(options: ConsoleTransportOptions | RawOptions = js.native) extends Transport
 
+/**
+  * Console Transport Singleton
+  * @author lawrence.daniels@gmail.com
+  */
 @js.native
 @JSImport("winston", "transports.Console")
 object Console extends Transport
+
+/**
+  * Console Transport Options
+  * @author lawrence.daniels@gmail.com
+  */
+@ScalaJSDefined
+class ConsoleTransportOptions(val level: js.UndefOr[String] = js.undefined,
+                              val formatter: js.UndefOr[js.Function1[ConsoleTransportOptions | RawOptions, String]] = js.undefined,
+                              val timestamp: js.UndefOr[js.Function1[Unit, Double]] = js.undefined)
+  extends js.Object
