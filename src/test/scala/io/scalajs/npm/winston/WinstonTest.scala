@@ -1,9 +1,9 @@
 package io.scalajs.npm
 package winston
 
-import io.scalajs.nodejs.{console, process, setTimeout}
+import io.scalajs.nodejs.{console, setTimeout}
 import io.scalajs.npm.winston.WinstonTest.MetaData
-import io.scalajs.npm.winston.transports.{ConsoleTransportOptions, DailyRotateFileOptions, FileTransportOptions}
+import io.scalajs.npm.winston.transports.{ConsoleTransportOptions, FileTransportOptions}
 import org.scalatest.FunSpec
 
 import scala.concurrent.duration._
@@ -163,22 +163,6 @@ class WinstonTest extends FunSpec {
       logger.transports.console.level = "debug"
       logger.transports.file.level = "verbose"
       logger.verbose("Will be logged in both transports!")
-    }
-
-    it("supports log rotation") {
-      WinstonDailyRotateFile
-      val transport = new winston.transports.DailyRotateFile(new DailyRotateFileOptions(
-        filename = "./src/test/resources/rotating.log",
-        datePattern = "yyyy-MM-dd.",
-        prepend = true,
-        level = if (process.env.get("ENV").contains("development")) "debug" else "info"
-      ))
-
-      val logger = new winston.Logger(new ConfigurationOptions(
-        transports = js.Array(transport)
-      ))
-
-      logger.info("Hello World!")
     }
 
   }

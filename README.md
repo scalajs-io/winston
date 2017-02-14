@@ -1,21 +1,32 @@
 Winston API for Scala.js
 ================================
-This is a Scala.js type-safe binding for [winston](https://www.npmjs.com/package/winston)
+[winston](https://www.npmjs.com/package/winston) - A multi-transport async logging library for Node.js.
 
-A multi-transport async logging library for Node.js.
+### Description
 
-#### Build Dependencies
+A multi-transport async logging library for node.js. "CHILL WINSTON! ... I put it in the logs."
+
+Winston is designed to be a simple and universal logging library with support for multiple transports. 
+A transport is essentially a storage device for your logs. Each instance of a winston logger can have 
+multiple transports configured at different levels. For example, one may want error logs to be stored 
+in a persistent remote location (like a database), but all logs output to the console or a local file.
+
+There also seemed to be a lot of logging libraries out there that coupled their implementation of 
+logging (i.e. how the logs are stored / indexed) to the API that they exposed to the programmer. 
+This library aims to decouple those parts of the process to make it more flexible and extensible.
+
+### Build Dependencies
 
 * [ScalaJs.io v0.3.x](https://github.com/scalajs-io/scalajs.io)
 * [SBT v0.13.13](http://www.scala-sbt.org/download.html)
 
-#### Build/publish the SDK locally
+### Build/publish the SDK locally
 
 ```bash
  $ sbt clean publish-local
 ```
 
-#### Running the tests
+### Running the tests
 
 Before running the tests the first time, you must ensure the npm packages are installed:
 
@@ -29,7 +40,7 @@ Then you can run the tests:
 $ sbt test
 ```
 
-#### Examples
+### Examples
 
 ##### Using the Default Logger
 
@@ -336,30 +347,7 @@ logger.transports.file.level = "verbose"
 logger.verbose("Will be logged in both transports!")
 ```
 
-```scala
-import io.scalajs.nodejs.process
-import io.scalajs.npm.winston
-import io.scalajs.npm.winston._
-import io.scalajs.npm.winston.transports._
-import scalajs.js
-
-WinstonDailyRotateFile // let's ensure the daily rotate file package is loaded
-
-val transport = new winston.transports.DailyRotateFile(new DailyRotateFileOptions(
-    filename = "./src/test/resources/rotating.log",
-    datePattern = "yyyy-MM-dd.",
-    prepend = true,
-    level = if (process.env.get("ENV").contains("development")) "debug" else "info"
-))
-
-val logger = new winston.Logger(new ConfigurationOptions(
-    transports = js.Array(transport)
-))
-
-logger.info("Hello World!")
-```
-
-#### Artifacts and Resolvers
+### Artifacts and Resolvers
 
 To add the `Winston` binding to your project, add the following to your build.sbt:  
 
