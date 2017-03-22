@@ -1,6 +1,6 @@
 {
   "name": "winston-sjs",
-  "version": "2.3.1-4",
+  "version": "0.4.0-pre1",
   "private": true,
   "dependencies": {
     "source-map": "^0.5.6",
