@@ -2,12 +2,12 @@ package io.scalajs.npm.winston
 package transports
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation.JSName
+import scala.scalajs.js.annotation.JSGlobal
 
 /**
   * Custom Logger Transport
   * @author lawrence.daniels@gmail.com
   */
 @js.native
-@JSName("winston.transports.CustomLogger")
+@JSGlobal("winston.transports.CustomLogger")
 abstract class CustomLogger extends Transport

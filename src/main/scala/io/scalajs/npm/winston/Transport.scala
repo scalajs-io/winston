@@ -1,14 +1,14 @@
 package io.scalajs.npm.winston
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation.JSName
+import scala.scalajs.js.annotation.JSGlobal
 
 /**
   * Winston Transport
   * @author lawrence.daniels@gmail.com
   */
 @js.native
-@JSName("winston.Transport")
+@JSGlobal("winston.Transport")
 abstract class Transport extends js.Object {
 
   ///////////////////////////////////////////////////////////////////////////////////////////
