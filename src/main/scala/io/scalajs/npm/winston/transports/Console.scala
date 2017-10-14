@@ -4,7 +4,7 @@ package transports
 import io.scalajs.RawOptions
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation.{JSImport, ScalaJSDefined}
+import scala.scalajs.js.annotation.JSImport
 import scala.scalajs.js.|
 
 /**
@@ -27,7 +27,7 @@ object Console extends Transport
   * Console Transport Options
   * @author lawrence.daniels@gmail.com
   */
-@ScalaJSDefined
+
 class ConsoleTransportOptions(val level: js.UndefOr[String] = js.undefined,
                               val formatter: js.UndefOr[js.Function1[ConsoleTransportOptions | RawOptions, String]] = js.undefined,
                               val timestamp: js.UndefOr[js.Function1[Unit, Double]] = js.undefined)

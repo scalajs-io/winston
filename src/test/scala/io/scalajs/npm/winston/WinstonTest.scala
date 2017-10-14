@@ -9,7 +9,7 @@ import org.scalatest.FunSpec
 import scala.concurrent.duration._
 import scala.language.existentials
 import scala.scalajs.js
-import scala.scalajs.js.annotation.ScalaJSDefined
+
 
 /**
   * Winston Tests
@@ -175,7 +175,7 @@ class WinstonTest extends FunSpec {
   */
 object WinstonTest {
 
-  @ScalaJSDefined
+
   class MetaData(val number: Integer = null) extends js.Object
 
 }

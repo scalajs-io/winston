@@ -4,7 +4,7 @@ package transports
 import io.scalajs.RawOptions
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation.{JSImport, ScalaJSDefined}
+import scala.scalajs.js.annotation.JSImport
 import scala.scalajs.js.|
 
 /**
@@ -27,7 +27,7 @@ object File extends Transport
   * Winston Transport Options
   * @param filename the name of the file to log to
   */
-@ScalaJSDefined
+
 class FileTransportOptions(val name: js.UndefOr[String] = js.undefined,
                            val filename: js.UndefOr[String] = js.undefined,
                            val level: js.UndefOr[String] = js.undefined,

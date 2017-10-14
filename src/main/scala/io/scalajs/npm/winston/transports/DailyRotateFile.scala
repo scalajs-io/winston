@@ -4,7 +4,7 @@ package transports
 import io.scalajs.RawOptions
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation.{JSImport, ScalaJSDefined}
+import scala.scalajs.js.annotation.JSImport
 import scala.scalajs.js.|
 
 /**
@@ -27,7 +27,7 @@ class DailyRotateFile(options: DailyRotateFileOptions | RawOptions = js.native) 
   *                    of the filename (default 'false').
   * @param level       the logging level
   */
-@ScalaJSDefined
+
 class DailyRotateFileOptions(val filename: js.UndefOr[String] = js.undefined,
                              val datePattern: js.UndefOr[String] = js.undefined,
                              val prepend: js.UndefOr[Boolean] = js.undefined,

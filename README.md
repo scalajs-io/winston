@@ -171,7 +171,7 @@ import io.scalajs.npm.winston
 import io.scalajs.npm.winston._
 import io.scalajs.npm.winston.transports._
 import scalajs.js
-import scala.scalajs.js.annotation.ScalaJSDefined
+
 
 val logger = new winston.Logger(new ConfigurationOptions(
   transports = js.Array(new winston.transports.Console())
@@ -205,7 +205,7 @@ logger.log("info", "test message", "first", "second", new MetaData(number = 123)
 // meta = {number: 123}
 // callback = function(){}
 
-@ScalaJSDefined
+
 class MetaData(val number: Integer = null) extends js.Object
 ```
 
@@ -352,7 +352,7 @@ logger.verbose("Will be logged in both transports!")
 To add the `Winston` binding to your project, add the following to your build.sbt:  
 
 ```sbt
-libraryDependencies += "io.scalajs.npm" %%% "winston" % "0.4.1"
+libraryDependencies += "io.scalajs.npm" %%% "winston" % "0.4.2"
 ```
 
 Optionally, you may add the Sonatype Repository resolver:
